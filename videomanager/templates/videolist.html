@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load static %}
+{% block style %}
+<style>
+    .flex-video {
+        position: relative;
+        padding-top: 25px;
+        padding-bottom: 67.5%;
+        height: 0;
+        margin-bottom: 16px;
+        overflow: hidden;
+    }
+
+    .flex-video.widescreen {
+        padding-bottom: 77.25%;
+    }
+
+    .flex-video.vimeo {
+        padding-top: 0;
+    }
+
+    .flex-video iframe,
+    .flex-video object,
+    .flex-video embed {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    @media only screen and (max-device-width: 800px),
+    only screen and (device-width:1024px) and (device-height: 600px),
+    only screen and (width: 1280px) and (orientation: landscape),
+    only screen and (device-width: 800px),
+    only screen and (max-width: 767px) {
+
+        .flex-video {
+            padding-top: 0;
+        }
+    }
+</style>
+{% endblock %}
+{% block content %}
+<section class="features2 cid-qOretuXw6E" id="features2-j">
+    <div class="container">
+        <div class="media-container-row">
+            <div class="card p-3 col-12 col-md-6 col-lg-4">
+
+                {% for video_obj in object_list %}
+                <div class="thumbnail">
+                    <div class="flex-video widescreen">
+                        <video width="400" controls>
+                            <source src='/media/{{video_obj.videofile}}' type="video/mp4">
+                            </source>
+                        </video>
+                    </div>
+
+                    <div class="card-box">
+                        <a href="{% url 'video:video_fetch' video_obj.slug %}">
+                            <h4 class="card-title pb-1 mbr-fonts-style display-7">{{ video_obj.title }}</h4>
+                        </a>
+                        <p class="card-title  mbr-fonts-style display-7">
+                            {{video_obj.video_description|default_if_none:"" }}<a href="" class="text-black"></a>
+                        </p>
+
+                        <p class="mbr-text mbr-fonts-style display-7">{{video_obj.timestamp}}</p>
+                    </div>
+                </div>
+                {%empty%}
+                <div>
+                    <h3> There are not video available.</h3>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if is_paginated %}
+<div class="row">
+    <div class="col-sm-12 col-md-8 offset-md-2">
+        <br>
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                </a></li>
+            {% else %}
+            <li class='disabled page-item'> <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                </a>
+            <li>
+                {% endif %}
+                {% for i in paginator.page_range %}
+                {% if page_obj.number == i %}
+            <li class="page-item active"><span><a class="page-link" href="?page={{i}}">{{ i }} </a></span></li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li><a class="page-link" href="?page={{ page_obj.next_page_number }}"> <span
+                        aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span></a></li>
+            {% else %}
+            <li class="disabled page-item"><a href="" class="page-link"><span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span></a></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+
+
+
+
+        </ul>
+
+        {% endblock %}

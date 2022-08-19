@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load mptt_tags %}
+
+{% block content %}
+<div class="container theme-showcase" role="main" style="margin-top: 75px">
+    <div class="jumbotron">
+
+        <ul class="root">
+            {% recursetree object_list  %}
+                <li>
+                    {% if not node.parent %} <h2>{{ node.title }}</h2> {% else %}<a href="{% url 'video:video_fetch' node.slug  %}">{{ node.title }}</a>{%endif%}
+                    {% if not node.is_leaf_node %}
+                        <ul class="children">
+                            {{ children }}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endrecursetree %}
+          </ul>
+    </div>
+</div>
+{% endblock %}
+
